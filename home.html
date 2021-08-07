@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.0.0/dist/tf.min.js"></script>
+        <script lang="js">
+            async function entrena(model){
+                const historia = await model.fit(
+                    xs,
+                    ys,
+                    {
+                        epochs:2000,
+                        callbacks:{
+                            onEpochEnd:async(epoch, logs) => {
+                                console.log("Epoch: " + epoch + " Error: " + logs.loss);
+                            }
+                        }
+                    }
+                )
+            }
+
+            const model = tf.sequential();
+            model.add(tf.layers.dense({units:1, inputShape:[1]}));
+            model.compile({loss:'meanSquaredError', optimizer:'sgd'});
+            model.summary();
+            
+            const xs = tf.tensor2d([1, 6, 3, 7, 0, 10, 2.5, -1, -2, 11], [10, 1]);
+            const ys = tf.tensor2d([3, 13, 7, 15, 1, 21, 6, -1, -3, 23], [10, 1]);
+        </script>
+    </head>
+    <body>
+        <h1>Red neuronal Js</h1>
+        <script>
+            entrena(model).then(() => {
+                document.write('<h1>', model.predict(tf.tensor2d([8], [1, 1])), '</h1>');
+            });
+        </script>
+    </body>
+</html>
